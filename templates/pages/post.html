@@ -1,0 +1,65 @@
+{% extends 'base.html' %}
+{% load static %}
+{% block content %}
+  <!-- Main Content -->
+  <div class="container" style="margin-top:120px">
+    <div class="row">
+      <div class="col-lg-8 col-md-10 mx-auto">
+        {% if pst %}
+          {% for post in pst %}
+        <div class="post-preview">
+            <h2 class="post-title">
+              {{post.title}}
+            </h2>
+            {% if post.photo %}
+                <div>
+                    <img src="{{ post.photo.url }}" alt="" class="img-fluid img-thumbnail">
+                </div>
+            {% endif %}
+            <p class="post-subtitle">
+              {{post.description}} 
+            </p>
+            <div class="row px-3">
+              <div class="post-meta">Posted by
+              <span style="text-transform: uppercase;">{{post.post_user}}</span>
+              on {{post.post_date}}</div>
+              {% if user.is_authenticated %}
+              <div class="ml-auto">
+              <button class="btn-sm" height="30px" data-toggle="collapse" data-target="#demo">Comment</button>
+              </div>
+              {% endif %}
+            </div>
+            {% if user.is_authenticated %}
+            <div id="demo" class="collapse">
+                {% if comment %}
+                  {% for com in comment %}
+                  <div class="row px-3" style="border-top:1px  solid rgb(189, 184, 184);">
+                    <div>{{com.comment}}</div>
+                    <div class="ml-auto text-muted">By <span style="text-transform: uppercase;">{{com.comment_user}}</span></div>
+                  </div>
+                  {% endfor %}
+                {% endif %}
+                <form method="POST">
+                  {% csrf_token %}
+                  
+                  <div class="row form-group px-3">
+                      <textarea type="text" class="form-control col-md-10" name="comment" placeholder="Comment" row="2" required></textarea>
+                      <input type="text" value="{{user.id}}" name="user_id" hidden>
+                      <input type="text" value="{{post.id}}" name="post_id" hidden>
+                      <input type="submit" class="btn btn-primary col-md-2" value="Submit">
+                  </div>
+                </form>
+            </div>
+            {% endif %}
+        </div>
+        <hr>
+        {% endfor %}
+        {% endif %}
+        <!-- Pager -->
+        <div class="clearfix">
+        </div>
+      </div>
+    </div>
+  </div>
+
+  {% endblock %}

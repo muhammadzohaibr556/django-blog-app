@@ -1,0 +1,86 @@
+{% extends 'base.html' %}
+{% load static %}
+{% block style %}
+<style>
+    #outer{
+        position:relative
+    }
+    #inner{
+        visibility:hidden;
+        position:absolute;
+        top:0;
+        left:0;
+        right:0;
+        bottom:0;
+        background:rgba(165, 165, 165, 0.6);
+        transition-timing-function: ease;
+    }
+    #outer:hover > #inner{
+        visibility:visible;
+    }
+</style>
+{% endblock %}
+{% block content %}
+<div class="offset-md-3 col-md-6">
+<div style="margin-top:150px" class="container">
+    <h2 class="text-center">Edit Post</h2>
+    <form method="POST" enctype="multipart/form-data">
+        {% csrf_token %}
+        <div id="outer" class="my-2">
+        {% if post.photo %}
+            <div class="mx-auto"><img id="image" src="{{ post.photo.url }}" width="650px" alt="" class="img-fluid img-thumbnail"></div>
+            <div id="inner">
+                <div class="mx-auto mt-4" style="width:100px; height:50px;margin-bottom:50px">
+                    {{form.photo}}
+                    <div id="delY" class="btn btn-danger mt-2 rounded" onclick="deleteimg()">Delete</div>
+                </div>
+            </div>
+        {% else %}
+            <div class="mx-auto"><img id="image" width="150px" src="{% static 'img/icon.png' %}" alt="No Image Chosen" class="img-fluid img-thumbnail"></div>
+            <div id="inner">
+                <div class="mx-auto mt-4" style="width:100px; height:50px;margin-bottom:50px">
+                    {{form.photo}}
+                    <div id="del" class="btn btn-danger mt-2 rounded" onclick="deleteimg()">Delete</div>
+                </div>
+            </div>
+        {% endif %}
+        
+        </div>
+        <input type="hidden" id="deleteImage" name="deleteImg" value="No">
+    <div class="form-group py-2">
+        <label for="title">Title</label>
+        {{form.title}}
+    </div>
+    <div class="form-group py-2">
+        <label for="title">Description</label>
+        {{form.description}}
+    </div>
+    <input class="btn btn-outline-secondary btn-block mt-4" type="submit" value ="Update">
+    </form>
+</div>
+</div>
+{% endblock %}
+{% block script %}
+<script type="text/javascript" src="{% static 'js/bootstrap-filestyle.min.js' %}"></script>
+<script>
+        $('#del').hide();
+    function readURL(input){
+        if (input.files && input.files[0]){
+            var reader = new FileReader();
+            reader.onload = function(e){
+                $('#image').attr('src',e.target.result).width(650);
+            };
+            reader.readAsDataURL(input.files[0]);
+        }
+        $('#del').show();        
+        $('#delY').show();        
+    }
+    function deleteimg(){    
+        $('#image').attr('src','{% static "img/icon.png" %}').width(150);
+        document.getElementById("deleteImage").value= "Yes";
+        $('#del').hide();
+        $('#delY').hide();
+        alert(document.getElementsById("deleteImage").value)
+    }
+</script>
+{% endblock %}

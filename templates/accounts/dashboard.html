@@ -1,0 +1,138 @@
+{% extends 'base.html' %}
+{% load static %}
+{% block content %}
+
+<header class="masthead" style="background-image:url({% static 'img/art.png' %})">
+    <div class="overlay"></div>
+        <div style="position:fixed; margin-top: 120px; width:100%;">
+            {% include '../partials/alerts.html' %}
+        </div>
+    <div class="container">
+        
+        <div class="row">
+            <div class="col-lg-8 col-md-10 mx-auto">
+            <div class="site-heading">
+                <h1>TechCo Blog</h1>
+                <span class="subheading"></span>
+            </div>
+            </div>
+        </div>
+    </div>
+</header>
+<div class="container">
+    <div class="row">
+        <div class="col-md-8">
+            {% for post in pst %}
+                    <div class="post-preview p-3" style="border:1px solid rgb(189, 184, 184)">
+                        <div class="row px-5">
+                            <h2 class="post-title">
+                            {{post.title}}
+                            </h2>
+                            <div class="dropdown ml-auto pr-5">
+                                <a class="dropdown-toggle" href="" data-toggle="dropdown">
+                                </a>
+                                <div class="dropdown-menu">
+                                    <!--a class="dropdown-item" data-toggle="modal" onclick="edity('{{post.id}}','{{post.title}}','{{post.description}}')" data-target="#edit">Edit</a>-->
+                                    <a class="dropdown-item" href="{% url 'update_post' post.id %}">Edit</a>
+                                    <a class="dropdown-item" data-toggle="modal" onclick="del('{{post.title}}','{{post.id}}')" data-target="#delete">Delete</a>
+                                </div>
+                            </div>
+                        </div>
+                            {% if post.photo %}
+                                <div class="col-lg-8" height="100px">
+                                    <img src="{{ post.photo.url }}" alt="" class="img-fluid img-thumbnail">
+                                </div>
+                            {% endif %}
+                        <p class="post-subtitle">
+                        {{post.description}} 
+                        </p>
+                        
+                        <div class="post-meta">Posted by
+                            <span style="text-transform: uppercase;">{{post.post_user}}</span>
+                            on {{post.post_date}}</div>
+                            <div class="modal" id="delete">
+                                <div class="modal-dialog">
+                                    <div class="modal-content">
+                                
+                                    <!-- Modal Header -->
+                                    <div class="modal-header" >
+                                        <h4 class="modal-title">Delete</h4>
+                                        <button type="button" class="close" data-dismiss="modal">&times;</button>
+                                    </div>
+                                
+                                    <!-- Modal body -->
+                                    <div class="modal-body">
+                                        Are You sure to delete "<b id="tit"></b>" Post
+                                    </div>
+                                
+                                    <!-- Modal footer -->
+                                    <div class="modal-footer">
+                                        <button type="button" class="btn btn-info" data-dismiss="modal">No</button>
+                                        <form action="{% url 'delete_post' %}" id="delform" method="POST">
+                                            {% csrf_token %}
+                                            <input type="hidden" name="input_id" id="input_id">
+                                            <button type="submit" class="btn btn-danger">Yes</button>
+                                        </form>
+                                            
+                                    </div>
+                                    </div>
+                                </div>
+                            </div>    
+                    </div>
+                    <hr>
+            {% endfor %}
+        </div>
+        <div class="col-md-4">
+            <center><button class="btn btn-outline-secondary mb-3" data-toggle="collapse" data-target="#demo">Create Post</button></center>
+            <div id="demo" class="collapse">
+                <form  method="POST" enctype="multipart/form-data">
+                    {% csrf_token %}
+                    {{form}}
+                    <input type="text" value="{{user.id}}" name="id" hidden>
+                    <button type="submit" class="btn btn-block btn-primary mt-3">Post</button>
+                </form>
+            </div>
+            <div class="card mt-3" style="width:100%">
+                
+                    {% if info.gender == 'Mr.' %}
+                        <img class="img-fluid card-img-top" src="{% static 'img/mr.png' %}" alt="Card image">
+                    {% elif info.gender == 'Ms.' %}
+                        <img class="img-fluid card-img-top" src="{% static 'img/ms.png' %}" alt="Card image">
+                    {% endif %}
+                <div class="card-body">
+                  <h4 class="card-title">{{info.gender}} {{user.first_name}} {{user.last_name}}</h4>
+                  <div class="card-text row mx-1"><div>Username : </div><div class="ml-auto" id="edit_user">{{user.username}}</div></div>
+                  <div class="card-text row mx-1"><div>Email : </div><div class="ml-auto" id="edit_email">{{user.email}}</div></div>
+                  <div class="card-text row mx-1"><div>Country : </div><div class="ml-auto" id="edit_country">{{info.country}}</div></div>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+
+    <!--div class="modal" id="edit">
+            <div class="modal-dialog">
+                <div class="modal-content">
+            
+                -- Modal Header --
+                <div class="modal-header" >
+                    <h4 class="modal-title">Edit</h4>
+                    <button type="button" class="close" data-dismiss="modal">&times;</button>
+                </div>
+            
+                -- Modal body --
+                <div class="modal-body">
+                        
+                    <form action="" id="edit_post_form" method="POST"  enctype="multipart/form-data">
+                        {% csrf_token %}
+                        {{form}}
+                            
+                        <button type="submit" class="btn btn-block btn-primary mt-3">Update</button>
+                    </form>
+                </div>
+            </div>
+            </div>
+        </div>-->  
+
+  {% endblock %}
+  

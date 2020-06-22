@@ -1,0 +1,174 @@
+  {% load static  %}
+  <!-- Navigation -->
+  <nav class="navbar navbar-expand-lg fixed-top" id="mainNav" style="background: #d9f7fa;">
+    <div class="container-fluid">
+      <a class="navbar-brand" href="{% url 'index' %}"><img src="{% static 'img/logo-dark.png' %}" width="40" height="40" alt="">TechCo</a>
+      <button class="navbar-toggler navbar-toggler-right" type="button" data-toggle="collapse" data-target="#navbarResponsive" aria-controls="navbarResponsive" aria-expanded="false" aria-label="Toggle navigation">
+        Menu
+        <i class="fas fa-bars"></i>
+      </button>
+      <div class="collapse navbar-collapse" id="navbarResponsive">
+        <ul class="navbar-nav">
+          <li 
+            {% if '/' == request.path %}
+                class="nav-item active"
+            {% else %}
+                class="nav-item"
+            {% endif %}
+            >
+            <a class="nav-link" href="{% url 'index' %}">Home</a>
+            </li>
+            <li 
+            {% if 'about' in request.path %}
+                class="nav-item active"
+            {% else %}
+                class="nav-item"
+            {% endif %}
+            >
+            <a class="nav-link" href="{% url 'about' %}">About</a>
+            </li>
+            {% if not user.is_authenticated %}
+            <li 
+            {% if 'contact' in request.path %}
+                class="nav-item active"
+            {% else %}
+                class="nav-item"
+            {% endif %}
+            >
+            <a class="nav-link" href="{% url 'contact' %}">Contact</a>
+            </li>
+            {% endif%}
+        </ul>
+        <ul class="navbar-nav ml-auto">
+            {% if user.is_authenticated %}
+            <li
+            {% if 'dashboard' in request.path %}
+                class="nav-item active"
+            {% else %}
+                class="nav-item"
+            {% endif %}
+            >
+            <a class="nav-link" href="{% url 'dashboard' %}">
+                Welcome {{user.username}} (DASHBOARD)</a>
+            </li>
+            <li class="nav-item">
+            <a class="nav-link" href="javascript:document.getElementById('logout').submit()">
+                <i class="fas fa-sign-out-alt"></i> Logout</a>
+                <form action="{% url 'logout' %}" method="POST" id="logout">
+                    {% csrf_token %}
+                    <input type=hidden>
+                </form>                    
+            
+            </li>
+        {% else %}
+          <li class="nav-item">
+            <a class="nav-link" href="" data-toggle="modal" data-target="#myModal1"><span class="fa fa-register"></span>Register</a>
+          </li>
+          <li class="nav-item">
+            <a class="nav-link" href="" data-toggle="modal" data-target="#myModal2"><span class="fa fa-login"></span> Login</a>
+          </li>
+        {% endif %}
+          
+        </ul>
+      </div>
+    </div>
+  </nav>
+        <!-- The Modal1 -->
+        <div class="modal fade" id="myModal1">
+          <div class="modal-dialog">
+            <div class="modal-content">
+        
+              <!-- Modal Header -->
+              <div class="modal-header">
+                <h4 class="modal-title">Register</h4>
+                <button type="button" class="close" data-dismiss="modal">&times;</button>
+              </div>
+        
+              <!-- Modal body -->
+              <div class="modal-body">
+              {% include './alerts.html' %}
+                  <form action="{% url 'register' %}" method="POST">
+                      {% csrf_token %}
+                      <div class="form-group">
+                          <input type="text" class="form-control" name="first" placeholder="First Name" required>
+                      </div>
+                      <div class="form-group">
+                          <input type="text" class="form-control" name="last" placeholder="Last Name" required>
+                      </div>
+                      <div class="form-group">
+                          <input type="text" class="form-control" name="user" placeholder="Username" required>
+                      </div>
+                      <div class="m-2 row">
+                        <div class="col-4 form-check">
+                          <label class="form-check-label text-muted">
+                            <input type="radio" class="form-check-input" value="Mr." name="gender">Male
+                          </label>
+                        </div>
+                        <div class="col-4 form-check">
+                          <label class="form-check-label text-muted">
+                            <input type="radio" class="form-check-input" value="Ms." name="gender">Female
+                          </label>
+                        </div>
+                        <div class="col-4 form-check">
+                          <label class="form-check-label text-muted">
+                            <input type="radio" class="form-check-input" value="M." name="gender">Other
+                          </label>
+                        </div>
+                      </div>
+                      <div class="form-group">
+                        <select class="form-control" name="country" required>
+                          <option disabled selected>--- Country ---</option>
+                          {% for key,value in countries.items %}
+                          <option value="{{key}}"
+                          {% if key == values.country %}
+                            selected
+                          {% endif %}
+                          >{{value}}</option>
+                        {% endfor %}
+                        </select>
+                      </div>
+                      <div class="form-group">
+                          <input type="email" class="form-control" name="email" placeholder="Email" required>
+                      </div>
+                      <div class="form-group">
+                          <input type="password" class="form-control" name="pwd" placeholder="Password" required>
+                      </div>
+                      <div class="form-group">
+                          <input type="password" class="form-control" name="cpwd" placeholder="Confrim Password" required>
+                      </div>
+                      
+                      <button type="submit" class="btn btn-block btn-primary">Submit</button>
+                  </form>
+              </div>
+        
+            </div>
+          </div>
+        </div>
+  <!-- The Modal2 -->
+  <div class="modal fade" id="myModal2">
+    <div class="modal-dialog">
+      <div class="modal-content">
+  
+        <!-- Modal Header -->
+        <div class="modal-header">
+          <h4 class="modal-title">Login</h4>
+          <button type="button" class="close" data-dismiss="modal">&times;</button>
+        </div>
+  
+        <!-- Modal body -->
+        <div class="modal-body">
+        {% include './alerts.html' %}
+          <form action="{% url 'login' %}" method="POST">
+            {% csrf_token %}
+              <div class="form-group">
+                <input type="text" class="form-control" name="userl" placeholder="Username" required>
+              </div>
+              <div class="form-group">
+                <input type="password" class="form-control" name="pwdl" placeholder="Password" required>
+              </div>
+              <button type="submit" class="btn btn-block btn-primary">Submit</button>
+            </form>
+        </div>
+      </div>
+    </div>
+  </div>

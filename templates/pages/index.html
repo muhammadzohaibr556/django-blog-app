@@ -1,0 +1,68 @@
+{% extends 'base.html' %}
+{% load static %}
+{% block content %}
+  <!-- Page Header -->
+      
+  <header class="masthead" style="background-image:url({% static 'img/accounting.jpg' %})">
+    <div class="overlay"></div>
+    <div style="position:fixed; margin-top: 120px; width:100%;">
+        {% include '../partials/alerts.html' %}
+    </div>
+    <div class="container">
+      <div class="row">
+        <div class="col-lg-8 col-md-10 mx-auto">
+          <div class="site-heading">
+            <h1>TechCo Blog</h1>
+            <span class="subheading"></span>
+            <div class="container" >
+              <form action="{% url 'search' %}" class="form-inline">
+                <!-- Form Row 1 -->
+                    <input type="text" name="keywords" class="form-control mx-2" placeholder="Keyword" style="border-radius:50px" value="{{ values.keywords }}">        
+                <!-- Form Row 2 -->
+                <input type="text" name="title" class="form-control mx-2" placeholder="Title" style="border-radius:50px" value="{{ values.title }}"> 
+                <input class="btn btn-success mx-2" type="submit" value="Search" style="border-radius:50px">
+            </form>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </header>
+  <!-- Main Content -->
+
+  <div class="container">
+    <div class="row">
+      <div class="col-lg-8 col-md-10 mx-auto">
+        {% if pst %}
+          {% for post in pst %}
+          <a href="{% url 'post' post.pk %}"> 
+            <div class="post-preview p-3" style="border:1px solid rgb(189, 184, 184)">
+              <h2 class="post-title px-5">
+              {{post.title}}
+              </h2>
+              {% if post.photo %}
+                  <div class="col-lg-8">
+                      <img src="{{ post.photo.url }}" alt="" class="img-fluid img-thumbnail">
+                  </div>
+              {% endif %}
+              <p class="post-subtitle">
+              {{post.ShortenText}}... 
+              </p>
+              
+              <div class="post-meta">Posted by
+                <span style="text-transform: uppercase;">{{post.post_user}}</span>
+                on {{post.post_date}}
+              </div>
+            </div>
+          </a>
+          <hr/>
+          {% endfor %}
+        {% endif %}
+        <!-- Pager -->
+        <div class="clearfix">
+          <a class="btn btn-primary float-right" href="#">Older Posts &rarr;</a>
+        </div>
+      </div>
+    </div>
+  </div>
+  {% endblock %}
